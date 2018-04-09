@@ -11,15 +11,21 @@ class InvoicePaid extends Notification
 {
     use Queueable;
 
+    public $quantity;
+
+    public $nif;
+
     /**
-     * Create a new notification instance.
-     *
-     * @return void
+     * InvoicePaid constructor.
+     * @param $quantity
+     * @param $nif
      */
-    public function __construct()
+    public function __construct($quantity, $nif)
     {
-        //
+        $this->quantity = $quantity;
+        $this->nif = $nif;
     }
+
 
     /**
      * Get the notification's delivery channels.
@@ -29,7 +35,7 @@ class InvoicePaid extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**
@@ -41,9 +47,9 @@ class InvoicePaid extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->line('The introduction to the notification.')
+            ->action('Notification Action', url('/'))
+            ->line('Thank you for using our application!');
     }
 
     /**
@@ -55,7 +61,22 @@ class InvoicePaid extends Notification
     public function toArray($notifiable)
     {
         return [
-            //
+            'quantity' => $this->quantity,
+            'nif' => $this->nif,
+        ];
+    }
+
+    /**
+     * Get the array representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toDatabase($notifiable)
+    {
+        return [
+            'quantity' => $this->quantity,
+            'nif' => $this->nif,
         ];
     }
 }
